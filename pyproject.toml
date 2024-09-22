@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "add-kobo-bookmark"
+version = "0.1.0"
+description = ""
+authors = ["truongvan <truongvan@live.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.10"
+anki = "^23.12.1"
+aqt = "^23.12.1"
+maturin = "^1.7.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
