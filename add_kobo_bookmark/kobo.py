@@ -35,8 +35,8 @@ def read_kobo_data():
             result = query.fetchall()
             return [
                 {
-                    "Front": row[2],
-                    "Back": row[3],
+                    "Text": row[2],
+                    "Back Extra": row[3],
                     "Title": volumne_id_to_book_title(row[0]),
                     "Color": map_color(row[1]),
                 }
