@@ -26,23 +26,22 @@ def map_color(number: int):
 
 def read_kobo_data():
     try:
-        connection = sqlite3.connect(KOBO_DB)
-        connection.text_factory = lambda x: str(x, "utf-8")
+        with sqlite3.connect(KOBO_DB) as connection:
+            connection.text_factory = lambda x: str(x, "utf-8")
+            cur = connection.cursor()
+            query = cur.execute(
+                """SELECT VolumeID,Color,Text,Annotation FROM Bookmark WHERE Type IN ("highlight", "note")"""
+            )
+            result = query.fetchall()
+            return [
+                {
+                    "Front": row[2],
+                    "Back": row[3],
+                    "Title": volumne_id_to_book_title(row[0]),
+                    "Color": map_color(row[1]),
+                }
+                for row in result
+            ]
     except sqlite3.OperationalError as e:
         showWarning(str(e))
         return None
-
-    cur = connection.cursor()
-    query = cur.execute(
-        """SELECT VolumeID,Color,Text,Annotation FROM Bookmark WHERE Type IN ("highlight", "note")"""
-    )
-    result = query.fetchall()
-    return [
-        {
-            "Front": row[2],
-            "Back": row[3],
-            "Title": volumne_id_to_book_title(row[0]),
-            "Color": map_color(row[1]),
-        }
-        for row in result
-    ]
