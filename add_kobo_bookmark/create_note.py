@@ -1,14 +1,19 @@
+from operator import mod
 from aqt import mw
 from .settings import DECK_NAME, NOTE_NAME
 from anki.notes import Note
 from anki.decks import DeckId
 from anki.collection import Collection
+from aqt.utils import showInfo
 
 
-def create_model(col: Collection):
+def get_note_type(col: Collection):
     models = col.models
-    new_model = models.new(NOTE_NAME)
-    return new_model
+    note_type = models.by_name(NOTE_NAME)
+    if note_type is None:
+        showInfo(f"Can't find {NOTE_NAME} model")
+        raise Exception(f"Can't find {NOTE_NAME} model")
+    return note_type
 
 
 def create_note(note_detail: dict[str, str]) -> bool:
@@ -16,12 +21,10 @@ def create_note(note_detail: dict[str, str]) -> bool:
         col = mw.col
         out = col.decks.add_normal_deck_with_name(DECK_NAME)
         deck_id = DeckId(out.id)
-        model = col.models.by_name(NOTE_NAME)
-        if model is None:
-            model = create_model(col)
+        note_type = get_note_type(col)
         title = note_detail.pop("Title")
         color = note_detail.pop("Color")
-        note = Note(col=col, model=model)
+        note = Note(col=col, model=note_type)
         for key, value in note_detail.items():
             note[key] = value
         if title:

@@ -11,15 +11,17 @@ def add_kobo_bookmarks() -> None:
     bookmarks = read_kobo_data()
     if bookmarks is None:
         return None
-    exited_words = []
+    exited_bookmark_ids = []
     error_words = []
     if mw and mw.col and mw.col.db:
         card_ids = mw.col.find_cards(f"deck:{DECK_NAME} note:{NOTE_NAME}")
-        exited_words = [mw.col.get_card(i).note()["Front"] for i in card_ids]
+        exited_bookmark_ids = [
+            mw.col.get_card(i).note()["_BookmarkID"] for i in card_ids
+        ]
 
     bookmark_added = 0
     for bookmark in bookmarks:
-        if bookmark["Front"] in exited_words:
+        if bookmark["_BookmarkID"] in exited_bookmark_ids:
             continue
         success = create_note(bookmark)
         if success:

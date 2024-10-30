@@ -30,11 +30,12 @@ def read_kobo_data():
             connection.text_factory = lambda x: str(x, "utf-8")
             cur = connection.cursor()
             query = cur.execute(
-                """SELECT VolumeID,Color,Text,Annotation FROM Bookmark WHERE Type IN ("highlight", "note")"""
+                """SELECT VolumeID,Color,Text,Annotation,BookmarkID FROM Bookmark WHERE Type IN ("highlight", "note")"""
             )
             result = query.fetchall()
             return [
                 {
+                    "_BookmarkID": row[4],
                     "Text": row[2],
                     "Back Extra": row[3],
                     "Title": volumne_id_to_book_title(row[0]),
